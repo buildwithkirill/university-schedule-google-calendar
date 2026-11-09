@@ -3,20 +3,23 @@ University Schedule → Google Calendar
 Automatically sync university schedule data from the Herzen University website into Google Calendar.
 
 Features
-Scrapes the latest university schedule
-Parses classes, teachers, classrooms, and dates
-Exports schedule data to JSON
-Automatically updates Google Calendar
-Removes outdated events before synchronization
-Prevents duplicate events
-Supports a dedicated university calendar
+* Scrapes the latest university schedule
+* Parses classes, teachers, classrooms, and dates
+* Exports schedule data to JSON
+* Automatically updates Google Calendar
+* Removes outdated events before synchronization
+* Prevents duplicate events
+* Supports a dedicated university calendar
+
 Tech Stack
+
 Python
 Requests
 BeautifulSoup4
 Google Calendar API
 JSON
 Git
+
 Project Structure
 schedule.py          - Schedule parser
 import_calendar.py   - Google Calendar synchronization
