@@ -1,21 +1,49 @@
 import json
-
+import os
+from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+CALENDAR_ID = "65c067decea67c9f2b6f34b09fa346b25d13717fceb9b681035e0135987cf892@group.calendar.google.com"
 SCOPES = ['https://www.googleapis.com/auth/calendar']
+creds = None
 
-flow = InstalledAppFlow.from_client_secrets_file(
-    'credentials.json',
-    SCOPES
-)
+if os.path.exists("token.json"):
+    creds = Credentials.from_authorized_user_file(
+        "token.json",
+        SCOPES
+    )
 
-creds = flow.run_local_server(port=0)
+if not creds:
+    flow = InstalledAppFlow.from_client_secrets_file(
+        "credentials.json",
+        SCOPES
+    )
+
+    creds = flow.run_local_server(port=0)
+
+    with open("token.json", "w") as token:
+        token.write(creds.to_json())
+
 
 service = build(
     "calendar",
     "v3",
     credentials=creds
 )
+events = service.events().list(
+    calendarId=CALENDAR_ID
+).execute()
+
+for event in events.get("items", []):
+    try:
+        service.events().delete(
+            calendarId=CALENDAR_ID,
+            eventId=event["id"]
+        ).execute()
+    except Exception:
+        pass
+
+print("Календарь очищен")
 
 with open(
     "schedule.json",
@@ -58,7 +86,7 @@ for lesson in lessons:
         }
     }
     service.events().insert(
-        calendarId="primary",
+        calendarId=CALENDAR_ID,
         body=event
     ).execute()
 
